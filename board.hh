@@ -1,0 +1,30 @@
+#ifndef BOARD_HH
+#define BOARD_HH
+#include<vector>
+#include<math.h>
+#include"plate.hh"
+#include"monster.hh"
+#include"pacman.hh"
+#include"tile.hh"
+#include<iostream>
+
+class Board{
+public:
+	Board(size_t size);
+	Plate getPlate();
+	size_t getTileSize();
+	size_t getScore();
+	Pacman getPacman();
+	void printInPrompt();
+	void playerMove();
+	void drawBoard(sf::RenderWindow *window);
+private:
+	Pacman pacman;
+	Monster test;
+	Plate plate;
+	size_t score;
+	size_t tileSize;
+
+
+};
+#endif
