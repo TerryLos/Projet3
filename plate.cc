@@ -31,6 +31,7 @@ void Plate::drawPlate(sf::RenderWindow *window,size_t tileSize){
 			for(size_t j=0; j<lengthCol;j++){
 				auto t = plat[i][j];
 
+
 				if(t.isFood()){
 					sf::CircleShape cercle(tileSize/6);
 					cercle.setPosition(j*tileSize+tileSize/3,i*tileSize+tileSize/3);
@@ -66,7 +67,22 @@ void Plate::drawPlate(sf::RenderWindow *window,size_t tileSize){
 					rectangle.setFillColor(sf::Color(0,0,0));
 					window->draw(rectangle);
 				}
+				//Trace les lignes blanches entre les cases 
+				sf::VertexArray line(sf::LineStrip,2);
+				line[0].position = sf::Vector2f(j*tileSize,i*tileSize);
+				line[1].position = sf::Vector2f((j+1)*tileSize,i*tileSize);
+				window->draw(line);
+				line[0].position = sf::Vector2f(j*tileSize,i*tileSize);
+				line[1].position = sf::Vector2f(j*tileSize,(i+1)*tileSize);
+				window->draw(line);
+				line[0].position = sf::Vector2f((j+1)*tileSize,i*tileSize);
+				line[1].position = sf::Vector2f((j+1)*tileSize,(i+1)*tileSize);
+				window->draw(line);
+				line[0].position = sf::Vector2f(j*tileSize,(i+1)*tileSize);
+				line[1].position = sf::Vector2f((j+1)*tileSize,(i+1)*tileSize);
+				window->draw(line);
 			}
+
 
 		}
 

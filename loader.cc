@@ -53,7 +53,6 @@ std::vector<std::vector<Tile>> Loader::loadPlate(){
 
 	nbrCol++;
 	}
-	nbrRow--;
 	iFile.close();
 
 	return table;

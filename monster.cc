@@ -4,13 +4,14 @@ Monster::Monster(std::array<float,2> initPos,std::string name){
 	setType('M');
 	setPosition(initPos);
 	this->name = name;
+	
 }
 void Monster::chase(sf::RenderWindow *window,const Plate plate,const Pacman pac){
-	lastPosition = plate.getTile((size_t)round(getY()),(size_t)round(getX()));
+	lastPosition = plate.getTile((size_t)getY(),(size_t)getX());
 	char c = getDisplacement(plate,window);
 
 	if(!name.compare("Shadow")){
-		setTarget(plate.getTile((size_t)round(pac.getY()),(size_t)round(pac.getX())));
+		setTarget(plate.getTile((size_t)pac.getY(),(size_t)pac.getX()));
 		move(0.1,c);
 		if(!plate.getTile(round(getY()),round(getX())).isPlayable())
 			move(-0.1,c);
@@ -31,21 +32,15 @@ char Monster::getDisplacement(const Plate plate,sf::RenderWindow *window){
 	char displacement =' ';
 	float minDistance = std::numeric_limits<float>::infinity();
 	std::vector<Tile> nextTile =  availableNextTile(plate);
-	std::cout << " nv "<<std::endl;
+
 	if(!name.compare("Shadow")){
 		for(auto i = nextTile.cbegin();i!= nextTile.cend();i++){
-			std::cout<< round(getY()) << " " << round(getX()) << " "<< i->getY() << " " << i->getY() << " Last Pos " << target.getY() << " " << target.getX()<<std::endl;
 			
-
-			sf::RectangleShape shape(sf::Vector2f(1.6*24,1.6*24));
-			shape.setPosition((i->getY()-0.25)*24,(i->getX()-0.25)*24);
-			shape.setFillColor(sf::Color(0,255,0));
-			window->draw(shape);
-
+			//std::cout<<minDistance << " " << getY() << " " << getX() <<" "<< target.getY()<<" "<< target.getX()<< std::endl;
 			if(minDistance>euclidianDistance(*i)){
 				minDistance = euclidianDistance(*i);
 
-				if(round(getX()) == i->getX()){
+				if((size_t)getX() == i->getX()){
 					if(getY() - i->getY() >0)
 						displacement ='l';
 					else
@@ -60,24 +55,26 @@ char Monster::getDisplacement(const Plate plate,sf::RenderWindow *window){
 			}
 		}
 	}
+
 	return displacement;
 }
 std::vector<Tile> Monster::availableNextTile(Plate plate){
 	std::vector<Tile> vect;
-	if(round(getY())+1 <= plate.getLengthCol() && round(getX())+1 <= plate.getLengthRow()){
-		if(plate.getTile((size_t)round(getY())+1,(size_t)round(getX())).isPlayable() && (plate.getTile((size_t)round(getY())+1,(size_t)round(getX())) != lastPosition))
-		vect.push_back(plate.getTile((size_t)round(getY())+1,(size_t)round(getX())));
 
-		if(plate.getTile((size_t)round(getY()),(size_t)round(getX())+1).isPlayable() && (plate.getTile(round(getY()),round(getX())+1) != lastPosition))
-		vect.push_back(plate.getTile((size_t)round(getY()),(size_t)round(getX())+1));
+	///if((size_t)getY()+1 <= plate.getLengthCol() && (size_t)getY()+1 <= plate.getLengthRow()){
+		//if(plate.getTile((size_t)getY()+1,(size_t)getX()).isPlayable() && (plate.getTile((size_t)getY()+1,(size_t)getX()) != lastPosition))
+		vect.push_back(plate.getTile((size_t)getY()+1,(size_t)getX()));
 
-	}
-	if(round(getY())-1>=0 && round(getX())-1>=0){
-	if(plate.getTile((size_t)round(getY())-1,(size_t)round(getX())).isPlayable() && (plate.getTile((size_t)round(getY())-1,(size_t)round(getX())) != lastPosition))
-		vect.push_back(plate.getTile((size_t)round(getY())-1,(size_t)round(getX())));
-	if(plate.getTile((size_t)round(getY()),(size_t)round(getX())-1).isPlayable() && (plate.getTile((size_t)round(getY()),(size_t)round(getX())-1) != lastPosition))
-		vect.push_back(plate.getTile((size_t)round(getY()),(size_t)round(getX())-1));
-	}
+		//if(plate.getTile((size_t)getY(),(size_t)getX()+1).isPlayable() && (plate.getTile((size_t)getY(),(size_t)getX()+1) != lastPosition))
+		vect.push_back(plate.getTile((size_t)getY(),(size_t)getX()+1));
+
+	//}
+	//if(getY()-1>=0 && getX()-1>=0){
+	//if(plate.getTile((size_t)getY()-1,(size_t)getX()).isPlayable() && (plate.getTile((size_t)getY()-1,(size_t)getX()) != lastPosition))
+		vect.push_back(plate.getTile((size_t)getY()-1,(size_t)getX()));
+	//if(plate.getTile((size_t)getY(),(size_t)getX()-1).isPlayable() && (plate.getTile((size_t)getY(),(size_t)getX()-1) != lastPosition))
+		vect.push_back(plate.getTile((size_t)getY(),(size_t)getX()-1));
+	//}
 	
 
 	return vect;

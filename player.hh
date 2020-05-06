@@ -16,6 +16,8 @@ public:
 	void setPosition(std::array<float,2> pos);
 	float getX() const;
 	float getY() const;
+	float getRayon() const;
+	void setRayon(float ray);
 	char getType() const ;
 	void setType(char t);
 
@@ -23,5 +25,6 @@ private:
 	std::array<float,2> position;
 	//p for pacman & m for monster
 	char type;
+	float rayon;
 };
 #endif
