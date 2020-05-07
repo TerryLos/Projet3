@@ -10,21 +10,31 @@ class Player{
 public:
 	Player() = default;
 	explicit Player(char ty,std::array<float,2> initPos);
-	void move(float distance,char direction);
+	void move(char direction);
 	void drawPlayer(sf::RenderWindow *window,size_t tileSize,bool shape,sf::Color color) const;
 	std::array<float,2> getPosition() const;
 	void setPosition(std::array<float,2> pos);
 	float getX() const;
 	float getY() const;
 	float getRayon() const;
+	void setSpeedInit(float speed);
+	void setSpeed(float sp);
+	float getSpeed() const;
 	void setRayon(float ray);
 	char getType() const ;
 	void setType(char t);
+	void setHide(bool state);
 
 private:
+
 	std::array<float,2> position;
 	//p for pacman & m for monster
 	char type;
+	
+	float nominalSpeed;
+	float currentSpeed;
+
 	float rayon;
+	bool hidden;
 };
 #endif

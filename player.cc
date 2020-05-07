@@ -4,22 +4,36 @@ Player::Player(char ty,std::array<float,2> initPos){
 	type=ty;
 	rayon = 0;
 	position = initPos;
+	hidden = false;
 }
 
-void Player::move(float distance,char direction){
+void Player::move(char direction){
 
 	if(direction=='u')
-		position[0] -= distance;
+		position[0] -= currentSpeed;
 	if(direction=='d')
-		position[0] += distance;
+		position[0] += currentSpeed;
 	if(direction=='r')
-		position[1] += distance;
+		position[1] += currentSpeed;
 	if(direction=='l')
-		position[1] -= distance;
+		position[1] -= currentSpeed;
 }
 
 std::array<float,2> Player::getPosition() const{
 	return position;
+}
+void Player::setSpeed(float sp){
+	currentSpeed = sp;
+}
+void Player::setHide(bool state){
+	hidden = state;
+}
+void Player::setSpeedInit(float speed){
+	nominalSpeed = speed;
+	currentSpeed = speed;
+}
+float Player::getSpeed() const{
+	return nominalSpeed;
 }
 float Player::getX() const{
 	return position[0];
@@ -48,8 +62,8 @@ void Player::setRayon(float ray){
 }
 
 void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha,sf::Color color) const{
-
-	if(sha){
+	if(!hidden){
+		if(sha){
 		sf::CircleShape shape(tileSize*rayon);
 		shape.setOrigin(tileSize*getRayon(),tileSize*getRayon());
 		shape.setPosition(position[1]*tileSize,position[0]*tileSize);
@@ -60,8 +74,9 @@ void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha,sf::Co
 	else{
 		sf::RectangleShape shape(sf::Vector2f(tileSize*rayon,tileSize*rayon));
 		shape.setOrigin(tileSize*getRayon()/2,tileSize*getRayon()/2);
-		shape.setPosition(position[1]*tileSize*getRayon(),position[0]*tileSize*getRayon());
+		shape.setPosition((position[1]+0.5)*tileSize,(position[0]+0.5)*tileSize);
 		shape.setFillColor(color);
 		window->draw(shape);
 	}
+}
 }
