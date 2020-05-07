@@ -15,6 +15,7 @@ public:
 	size_t getType() const;
 	bool isPlayable() const;
 	bool isEmpty()const;
+	bool isTunnel() const;
 	bool isFood()const;
 	bool isPilz()const;
 	bool isWall() const;

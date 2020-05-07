@@ -10,19 +10,23 @@
 class Monster : public Player {
 public:
 	Monster() = default;
-	explicit Monster(std::array<float,2> initPos,std::string name);
-	void chase(sf::RenderWindow *window,const Plate plate,const Pacman pac);
+	explicit Monster(std::array<float,2> initPos,std::string name,float speed);
+	void chase(const Plate plate,const Pacman pac);
 	std::string getName() const;
 	void setMode(std::string mo);
 	void setTarget(const Tile t);
-	char getDisplacement(const Plate plate,sf::RenderWindow *window);
+	char getDisplacement(const Plate plate);
 	float euclidianDistance(const Tile t);
+
 
 private:
 	std::vector<Tile> availableNextTile(Plate plate);
+
 	std::string name;
 	std::string mode;
 	Tile target;
 	Tile lastPosition;
+
 };
+char opposite(char c);
 #endif

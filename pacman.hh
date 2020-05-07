@@ -7,7 +7,7 @@
 class Pacman : public Player {
 public:
 	Pacman() = default;
-	explicit Pacman(std::array<float,2> initPos);
+	explicit Pacman(std::array<float,2> initPos,float speed);
 	size_t eat(Plate plateau);
 };
 #endif

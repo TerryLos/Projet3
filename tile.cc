@@ -7,8 +7,8 @@ Tile::Tile(size_t ty,bool wa,const std::array<size_t,2> pos){
 }
  void Tile::operator =(const Tile &tile){
  	std::array<size_t,2> pos;
- 	pos[0] = tile.getY();
- 	pos[1] = tile.getX();
+ 	pos[0] = tile.getX();
+ 	pos[1] = tile.getY();
 	position = pos;
 	type = tile.getType();
 	wall = tile.isWall();
@@ -27,6 +27,9 @@ size_t Tile::getType() const{
 bool Tile::isWall() const{
 	return (wall==true) && (type==0);
 }
+bool Tile::isTunnel() const{
+	return (wall ==false) && (type ==3);
+}
 bool Tile::isFantomHouse() const{
 	return (wall==true) && (type==1);
 }
@@ -37,7 +40,7 @@ bool Tile::isFood()const{
 	return (type ==1) && (wall == false);
 }
 bool Tile::isPlayable()const{
-	return isFood()||isEmpty()||isPilz();
+	return isFood()||isEmpty()||isPilz()||isTunnel();
 }
 bool Tile::isPilz()const{
 	return (type ==2) && (wall==false);

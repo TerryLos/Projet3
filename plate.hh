@@ -13,6 +13,7 @@ public:
 
 	void setTile(Tile t);
 	size_t getNbrFood() const;
+	void decountFood();
 	size_t getLengthRow() const ;
 	size_t getLengthCol()const;
 	void drawPlate(sf::RenderWindow *window,size_t tileSize);

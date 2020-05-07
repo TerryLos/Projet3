@@ -10,13 +10,15 @@
 
 class Board{
 public:
-	Board(size_t size);
+	Board(size_t size,float refSpeed);
 	Plate getPlate();
 	size_t getTileSize();
 	size_t getScore();
 	Pacman getPacman();
 	void printInPrompt();
 	void playerMove();
+	void monsterMove();
+	void teleport(Player p);
 	void drawBoard(sf::RenderWindow *window);
 private:
 	Pacman pacman;
@@ -24,6 +26,7 @@ private:
 	Plate plate;
 	size_t score;
 	size_t tileSize;
+	float refSpeed;
 
 
 };

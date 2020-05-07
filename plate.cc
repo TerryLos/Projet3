@@ -16,9 +16,12 @@ size_t Plate::getLengthRow() const{
 size_t Plate::getLengthCol()const{
 	return lengthCol;
 }
-Tile Plate::getTile(size_t y,size_t x) const{
+Tile Plate::getTile(size_t x,size_t y) const{
 	
-	return plat[y][x];
+	return plat[x][y];
+}
+void Plate::decountFood(){
+	nbrFood--;
 }
 
 void Plate::setTile(Tile t){
@@ -43,7 +46,7 @@ void Plate::drawPlate(sf::RenderWindow *window,size_t tileSize){
 
 				}
 
-				if(t.isEmpty()){
+				if(t.isEmpty() || t.isTunnel()){
 					sf::RectangleShape rectangle(sf::Vector2f(tileSize,tileSize));
 					rectangle.setPosition(j*tileSize,i*tileSize);
 					rectangle.setFillColor(sf::Color(0,0,0));
@@ -67,7 +70,7 @@ void Plate::drawPlate(sf::RenderWindow *window,size_t tileSize){
 					rectangle.setFillColor(sf::Color(0,0,0));
 					window->draw(rectangle);
 				}
-				//Trace les lignes blanches entre les cases 
+				//Trace les lignes blanches entre les cases à supprimer plus tard
 				sf::VertexArray line(sf::LineStrip,2);
 				line[0].position = sf::Vector2f(j*tileSize,i*tileSize);
 				line[1].position = sf::Vector2f((j+1)*tileSize,i*tileSize);
