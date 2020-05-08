@@ -17,7 +17,7 @@ public:
 	void setTarget(std::array<float,2> target);
 	char getDisplacement(const Plate plate, const bool outOfHouse) const ;
 	float euclidianDistance(const Tile t) const;
-	void setLastPosition(const Tile t);
+	void setLastMove(const char move);
 	std::array<float,2> getSpawn();
 
 
@@ -28,7 +28,7 @@ private:
 
 	std::string name;
 	std::string mode;
-	Tile lastPosition;
+	char lastMove;
 
 };
 char opposite(char c);

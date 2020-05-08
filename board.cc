@@ -5,15 +5,15 @@ Board::Board(size_t size,float refSpeed){
 	tileSize = size;
 	score=0;
 	this->refSpeed = refSpeed;
-	std::array<std::array<float,2>,2> pos = {{ { {20,14} } /*, { {14,12} }*/, { {17,12} } /*,{ {17,14} } , { {17,16} } */}};
-	std::array<std::string,1> names = { {/*"Shadow",*/"Speedy"/*,"Bashful","Pokey"*/} };
-	std::array<sf::Color,2> color =  { {sf::Color(255,255,0)/*,sf::Color(255,0,0)*/,sf::Color(250,197,246)/*,sf::Color(0,255,255),sf::Color(247,187,20)*/} };
+	std::array<std::array<float,2>,5> pos = {{ { {20,14} } , { {14,12} }, { {17,12} } ,{ {17,14} } , { {17,16} } }};
+	std::array<std::string,4> names = { {"Shadow","Speedy","Bashful","Pokey"} };
+	std::array<sf::Color,5> color =  { {sf::Color(255,255,0),sf::Color(255,0,0),sf::Color(250,197,246),sf::Color(0,255,255),sf::Color(247,187,20)} };
 
 	pacman = Pacman(pos[0],refSpeed);
 	pacman.setRayon(0.8);
 	pacman.setColor(color[0]);
 
-	for(int i=0;i<1;i++){
+	for(int i=0;i<4;i++){
 		monsters[i] = Monster(pos[i+1],names[i],0.95*refSpeed);
 		monsters[i].setRayon(1.6);
 		monsters[i].setColor(color[i+1]);
@@ -35,6 +35,7 @@ size_t Board::getTileSize(){
 }
 void Board::drawBoard(sf::RenderWindow *window){
 	plate.drawPlate(window,tileSize);
+	pacman.setColor(sf::Color(255,255,0));
 	pacman.drawPlayer(window,tileSize,true);
 
 	for( auto i = monsters.cbegin(); i!= monsters.cend();i++)
@@ -44,13 +45,10 @@ void Board::drawBoard(sf::RenderWindow *window){
 }
 void Board::monsterMove(){
 
-	//mets la vitesse par défaut
-	std::array<float,2> posBeforeMove;
 
 	for(auto monster = monsters.begin();monster != monsters.end();monster++){
 
-		posBeforeMove = monster->getPosition();
-		monster->setSpeed(monster->getSpeed());
+		monster->setSpeed(0.95*refSpeed);
 
 		if(plate.getTile((size_t)monster->getX(),(size_t)monster->getY()).isTunnel()){
 			monster->setSpeed(0.55*monster->getSpeed());
@@ -63,11 +61,6 @@ void Board::monsterMove(){
 		if(!monster->getMode().compare("chase") && !plate.getTile((size_t)monster->getX(),(size_t)monster->getY()).isFantomHouse())
 			monster->chase(plate,plate.getTile((size_t)pacman.getX(),(size_t)pacman.getY()),pacman.getDirection());
 
-
-
-		//Détermination de la last Tile du monstre
-		if(plate.getTile((size_t)posBeforeMove[0],(size_t)posBeforeMove[1]) != plate.getTile((size_t)monster->getPosition()[0],(size_t)monster->getPosition()[1]))
-			monster->setLastPosition(plate.getTile((size_t)posBeforeMove[0],(size_t)posBeforeMove[1]));
 	}
 
 }

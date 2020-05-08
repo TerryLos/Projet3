@@ -6,10 +6,12 @@ Monster::Monster(std::array<float,2> initPos,std::string name,float speed){
 	setSpeed(speed);
 	this->name = name;
 	spawn = initPos;
+	setLastMove(' ');
+	setHide(false);
 }
 
-void Monster::setLastPosition(const Tile t){
-	lastPosition = t;
+void Monster::setLastMove(const char move){
+	lastMove = move;
 }
 
 void Monster::chase(const Plate plate,const Tile tile,const char direction){
@@ -25,9 +27,12 @@ void Monster::chase(const Plate plate,const Tile tile,const char direction){
 		setTarget(target);
 		char c = getDisplacement(plate,outOfHouse);
 		move(c);
+		setLastMove(c);
+
 		if(!(plate.getTile((size_t)getX(),(size_t)getY()).isPlayable() || plate.getTile((size_t)getX(),(size_t)getY()).isFantomHouse()))
 			move(opposite(c));
 	}
+
 	if(!name.compare("Speedy")){
 		switch(direction){
 			case 'u':
@@ -54,10 +59,28 @@ void Monster::chase(const Plate plate,const Tile tile,const char direction){
 		setTarget(target);
 		char c = getDisplacement(plate,outOfHouse);
 		move(c);
+		setLastMove(c);
 		if(!(plate.getTile((size_t)getX(),(size_t)getY()).isPlayable() || plate.getTile((size_t)getX(),(size_t)getY()).isFantomHouse()))
 			move(opposite(c));
 	}
+	if(!name.compare("Bashful")){
 
+	}
+	if(!name.compare("Pokey")){
+		target[0] = (size_t)tile.getX();
+		target[1] = (size_t)tile.getY();
+		setTarget(target);
+
+		if(euclidianDistance(plate.getTile(getX(),getY())) <= 8 && !plate.getTile(getX(),getY()).isFantomHouse())
+			setTarget(spawn);
+
+		char c = getDisplacement(plate,outOfHouse);
+		move(c);
+		setLastMove(c);
+
+		if(!(plate.getTile((size_t)getX(),(size_t)getY()).isPlayable() || plate.getTile((size_t)getX(),(size_t)getY()).isFantomHouse()))
+			move(opposite(c));
+	}
 }
 char opposite(char c){
 	if( c == 'd')
@@ -89,11 +112,9 @@ char Monster::getDisplacement(const Plate plate,const bool outOfHouse) const{
 	float minDistance = std::numeric_limits<float>::infinity();
 	std::vector<Tile> nextTile =  availableNextTile(plate,outOfHouse);
 
-	std::cout << "Position "<< getX() << " " << getY() << std::endl;
-	std::cout << " Last position "<< lastPosition.getY() << " " << lastPosition.getX() << std::endl;
 
 	for(auto i = nextTile.cbegin();i!= nextTile.cend();i++){
-		std::cout << "Propositions "<< euclidianDistance(*i) << " "<< i->getY() << " " << i->getX() << std::endl;
+	
 		if(minDistance>euclidianDistance(*i)){
 
 			minDistance = euclidianDistance(*i);
@@ -112,8 +133,7 @@ char Monster::getDisplacement(const Plate plate,const bool outOfHouse) const{
 			
 		}
 	}
-	
-	std::cout<< "\n";
+
 	return displacement;
 }
 std::vector<Tile> Monster::availableNextTile(const Plate plate,const bool outOfHouse) const{
@@ -122,13 +142,13 @@ std::vector<Tile> Monster::availableNextTile(const Plate plate,const bool outOfH
 		if((size_t)getX() < plate.getLengthCol() && (size_t)getY() < plate.getLengthRow()){
 
 			if((plate.getTile((size_t)getX()+1,(size_t)getY()).isPlayable() || plate.getTile((size_t)getX()+1,(size_t)getY()).isFantomHouse()) 
-				&& (plate.getTile((size_t)getX()+1,(size_t)getY()) != lastPosition)){
+				&& lastMove != 'u'){
 
 				vect.push_back(plate.getTile((size_t)getX()+1,(size_t)getY()));
 			}
 
 			if((plate.getTile((size_t)getX(),(size_t)getY()+1).isPlayable() || plate.getTile((size_t)getX(),(size_t)getY()+1).isFantomHouse()) 
-				&& (plate.getTile((size_t)getX(),(size_t)getY()+1) != lastPosition)){
+				&& lastMove != 'l'){
 
 				vect.push_back(plate.getTile((size_t)getX(),(size_t)getY()+1));
 			}
@@ -137,12 +157,12 @@ std::vector<Tile> Monster::availableNextTile(const Plate plate,const bool outOfH
 		if(getY()-1>=0 && getX()-1>=0){
 
 			if((plate.getTile((size_t)getX()-1,(size_t)getY()).isPlayable() || plate.getTile((size_t)getX()-1,(size_t)getY()).isFantomHouse())
-				&& (plate.getTile((size_t)getX()-1,(size_t)getY()) != lastPosition)){
+				&& lastMove != 'd'){
 								vect.push_back(plate.getTile((size_t)getX()-1,(size_t)getY()));
 				}
 			
 			if((plate.getTile((size_t)getX(),(size_t)getY()-1).isPlayable() ||plate.getTile((size_t)getX(),(size_t)getY()-1).isFantomHouse())
-				&& (plate.getTile((size_t)getX(),(size_t)getY()-1) != lastPosition)){
+				&& lastMove != 'r'){
 
 				vect.push_back(plate.getTile((size_t)getX(),(size_t)getY()-1));
 			}
@@ -152,21 +172,21 @@ std::vector<Tile> Monster::availableNextTile(const Plate plate,const bool outOfH
 	else{
 		if((size_t)getX() < plate.getLengthCol() && (size_t)getY() < plate.getLengthRow()){
 
-			if(plate.getTile((size_t)getX()+1,(size_t)getY()).isPlayable() && (plate.getTile((size_t)getX()+1,(size_t)getY()) != lastPosition))
+			if(plate.getTile((size_t)getX()+1,(size_t)getY()).isPlayable() && lastMove != 'u')
 				vect.push_back(plate.getTile((size_t)getX()+1,(size_t)getY()));
 
 
-			if(plate.getTile((size_t)getX(),(size_t)getY()+1).isPlayable() && (plate.getTile((size_t)getX(),(size_t)getY()+1) != lastPosition))
+			if(plate.getTile((size_t)getX(),(size_t)getY()+1).isPlayable() && lastMove != 'l')
 				vect.push_back(plate.getTile((size_t)getX(),(size_t)getY()+1));
 
 
 		}
 		if(getY()-1>=0 && getX()-1>=0){
-			if(plate.getTile((size_t)getX()-1,(size_t)getY()).isPlayable() && (plate.getTile((size_t)getX()-1,(size_t)getY()) != lastPosition))
+			if(plate.getTile((size_t)getX()-1,(size_t)getY()).isPlayable() && lastMove != 'd')
 				vect.push_back(plate.getTile((size_t)getX()-1,(size_t)getY()));
 
 			
-			if(plate.getTile((size_t)getX(),(size_t)getY()-1).isPlayable() && (plate.getTile((size_t)getX(),(size_t)getY()-1) != lastPosition))
+			if(plate.getTile((size_t)getX(),(size_t)getY()-1).isPlayable() && lastMove != 'r')
 				vect.push_back(plate.getTile((size_t)getX(),(size_t)getY()-1));
 
 		

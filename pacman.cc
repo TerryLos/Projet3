@@ -4,6 +4,7 @@ Pacman::Pacman(std::array<float,2> initPos,float speed){
 	setType('P');
 	setPosition(initPos);
 	setSpeedInit(speed);
+	setHide(false);
 }
 size_t Pacman::eat(Plate plateau,std::array<Monster,4> monsterArray) const{
 

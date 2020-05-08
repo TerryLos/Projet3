@@ -9,7 +9,7 @@
 
 int main(){
 	Plate plate;
-	Board board(24,0.2);
+	Board board(16,0.2);
 	sf::RenderWindow window(sf::VideoMode(board.getPlate().getLengthCol()*board.getTileSize(),board.getPlate().getLengthRow()*board.getTileSize()),"Pacorona");
 	size_t k=0;
 

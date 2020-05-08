@@ -65,6 +65,7 @@ void Player::setColor(sf::Color color){
 }
 
 void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const{
+
 	if(!hidden){
 		if(sha){
 		sf::CircleShape shape(tileSize*rayon);
@@ -73,7 +74,7 @@ void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const
 		shape.setFillColor(color);
 		window->draw(shape);
 
-	}
+		}
 	else{
 		sf::RectangleShape shape(sf::Vector2f(tileSize*rayon,tileSize*rayon));
 		shape.setOrigin(tileSize*getRayon()/2,tileSize*getRayon()/2);
