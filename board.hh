@@ -18,11 +18,12 @@ public:
 	void printInPrompt();
 	void playerMove();
 	void monsterMove();
+	void monsterOutOfHouse(Monster *monster);
 	void teleport(Player p);
 	void drawBoard(sf::RenderWindow *window);
 private:
 	Pacman pacman;
-	Monster test;
+	std::array<Monster,4> monsters;
 	Plate plate;
 	size_t score;
 	size_t tileSize;

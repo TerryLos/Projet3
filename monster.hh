@@ -1,7 +1,6 @@
 #ifndef MONSTER_HH
 #define MONSTER_HH
 #include"player.hh"
-#include"pacman.hh"
 #include"plate.hh"
 #include"tile.hh"
 #include<string>
@@ -11,20 +10,24 @@ class Monster : public Player {
 public:
 	Monster() = default;
 	explicit Monster(std::array<float,2> initPos,std::string name,float speed);
-	void chase(const Plate plate,const Pacman pac);
+	void chase(const Plate plate,const Tile,const char direction);
 	std::string getName() const;
 	void setMode(std::string mo);
-	void setTarget(const Tile t);
-	char getDisplacement(const Plate plate);
-	float euclidianDistance(const Tile t);
+	std::string getMode();
+	void setTarget(std::array<float,2> target);
+	char getDisplacement(const Plate plate, const bool outOfHouse) const ;
+	float euclidianDistance(const Tile t) const;
+	void setLastPosition(const Tile t);
+	std::array<float,2> getSpawn();
 
 
 private:
-	std::vector<Tile> availableNextTile(Plate plate);
+	std::vector<Tile> availableNextTile(const Plate plate,const bool outOfHouse) const ;
+	std::array<float,2> spawn;
+	std::array<float,2> target;
 
 	std::string name;
 	std::string mode;
-	Tile target;
 	Tile lastPosition;
 
 };

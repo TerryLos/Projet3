@@ -1,19 +1,26 @@
 #include"board.hh"
-#include<iostream>
+
 Board::Board(size_t size,float refSpeed){
 	plate = Plate();
 	tileSize = size;
 	score=0;
 	this->refSpeed = refSpeed;
-	std::array<float,2> pos;
-	pos[0]=15;pos[1]=21.5;
+	std::array<std::array<float,2>,2> pos = {{ { {20,14} } /*, { {14,12} }*/, { {17,12} } /*,{ {17,14} } , { {17,16} } */}};
+	std::array<std::string,1> names = { {/*"Shadow",*/"Speedy"/*,"Bashful","Pokey"*/} };
+	std::array<sf::Color,2> color =  { {sf::Color(255,255,0)/*,sf::Color(255,0,0)*/,sf::Color(250,197,246)/*,sf::Color(0,255,255),sf::Color(247,187,20)*/} };
 
-	pacman =  Pacman(pos,refSpeed);
+	pacman = Pacman(pos[0],refSpeed);
 	pacman.setRayon(0.8);
-	pos[0]=13;pos[1]=12;
+	pacman.setColor(color[0]);
 
-	test = Monster(pos,"Shadow",0.95*refSpeed);
-	test.setRayon(1.6);
+	for(int i=0;i<1;i++){
+		monsters[i] = Monster(pos[i+1],names[i],0.95*refSpeed);
+		monsters[i].setRayon(1.6);
+		monsters[i].setColor(color[i+1]);
+		monsters[i].setMode("chase");
+
+	}
+
 }
 
 Plate Board::getPlate(){
@@ -28,21 +35,44 @@ size_t Board::getTileSize(){
 }
 void Board::drawBoard(sf::RenderWindow *window){
 	plate.drawPlate(window,tileSize);
-	pacman.drawPlayer(window,tileSize,true,sf::Color(255,255,0));
-	test.drawPlayer(window,tileSize,false,sf::Color(255,0,0));
+	pacman.drawPlayer(window,tileSize,true);
+
+	for( auto i = monsters.cbegin(); i!= monsters.cend();i++)
+		i->drawPlayer(window,tileSize,false); 
+
 
 }
 void Board::monsterMove(){
 
 	//mets la vitesse par défaut
-	test.setSpeed(test.getSpeed());
-	if(plate.getTile((size_t)test.getX(),(size_t)test.getY()).isTunnel()){
-		test.setSpeed(0.55*test.getSpeed());
+	std::array<float,2> posBeforeMove;
 
-		teleport(test);
+	for(auto monster = monsters.begin();monster != monsters.end();monster++){
+
+		posBeforeMove = monster->getPosition();
+		monster->setSpeed(monster->getSpeed());
+
+		if(plate.getTile((size_t)monster->getX(),(size_t)monster->getY()).isTunnel()){
+			monster->setSpeed(0.55*monster->getSpeed());
+
+			teleport(*monster);
+		}
+		if(plate.getTile((size_t)monster->getX(),(size_t)monster->getY()).isFantomHouse())
+			monsterOutOfHouse(monster);
+
+		if(!monster->getMode().compare("chase") && !plate.getTile((size_t)monster->getX(),(size_t)monster->getY()).isFantomHouse())
+			monster->chase(plate,plate.getTile((size_t)pacman.getX(),(size_t)pacman.getY()),pacman.getDirection());
+
+
+
+		//Détermination de la last Tile du monstre
+		if(plate.getTile((size_t)posBeforeMove[0],(size_t)posBeforeMove[1]) != plate.getTile((size_t)monster->getPosition()[0],(size_t)monster->getPosition()[1]))
+			monster->setLastPosition(plate.getTile((size_t)posBeforeMove[0],(size_t)posBeforeMove[1]));
 	}
-	test.chase(plate,pacman);
 
+}
+void Board::monsterOutOfHouse(Monster *monster) {
+	monster->chase(plate,plate.getTile(15,12),'o');
 }
 void Board::teleport(Player p){
 
@@ -67,21 +97,29 @@ void Board::playerMove(){
 	In the memory of the program */
 	std::array<float,2> tmpPos;
 	std::array<size_t,2> roundedPos;
+	size_t value =0;
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
 		tmpPos = pacman.getPosition();
 		roundedPos[1] = (size_t)tmpPos[0];
 		roundedPos[0] = (size_t)tmpPos[1];
 		pacman.move('l');
+		pacman.setDirection('l');
 
-		if(!plate.getTile(roundedPos[1],roundedPos[0]-1).isPlayable() && abs(pacman.getPosition()[1]-(roundedPos[0])) <= pacman.getRayon()/2)
+		if(!plate.getTile(roundedPos[1],roundedPos[0]-1).isPlayable() && abs(pacman.getPosition()[1]-(roundedPos[0])) <= pacman.getRayon()/2){
 			pacman.move('r');
+			pacman.setDirection('r');
+		}
 
-		if(pacman.eat(plate)){
-			score+= pacman.eat(plate);
-			Tile tile(0,false,roundedPos);
-			plate.setTile(tile);
-			plate.decountFood();
+		value = pacman.eat(plate,monsters);
+		if(value){
+			score+= value;
+			if(value <= 50){
+				Tile tile(0,false,roundedPos);
+				plate.setTile(tile);
+				plate.decountFood();
+			}
+			
 		}
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
@@ -89,15 +127,22 @@ void Board::playerMove(){
 		roundedPos[1] = (size_t)tmpPos[0];
 		roundedPos[0] = (size_t)tmpPos[1];
 		pacman.move('r');
+		pacman.setDirection('r');
 
-		if(!plate.getTile(roundedPos[1],roundedPos[0]+1).isPlayable() && abs(pacman.getPosition()[1]-(roundedPos[0]+1)) <= pacman.getRayon()/2 )
+		if(!plate.getTile(roundedPos[1],roundedPos[0]+1).isPlayable() && abs(pacman.getPosition()[1]-(roundedPos[0]+1)) <= pacman.getRayon()/2 ){
 			pacman.move('l');
+			pacman.setDirection('l');
+		}
 
-		if(pacman.eat(plate)){
-			score+= pacman.eat(plate);
-			Tile tile(0,false,roundedPos);
-			plate.setTile(tile);
-			plate.decountFood();
+		value = pacman.eat(plate,monsters);
+		if(value){
+			score+= value;
+			if(value <= 50){
+				Tile tile(0,false,roundedPos);
+				plate.setTile(tile);
+				plate.decountFood();
+			}
+			
 		}
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
@@ -105,15 +150,22 @@ void Board::playerMove(){
 		roundedPos[1] = (size_t)tmpPos[0];
 		roundedPos[0] = (size_t)tmpPos[1];
 		pacman.move('u');
+		pacman.setDirection('u');
 
-		if(!plate.getTile(roundedPos[1]-1,roundedPos[0]).isPlayable() && abs(pacman.getPosition()[0]-(roundedPos[1])) <= pacman.getRayon()/2 )
+		if(!plate.getTile(roundedPos[1]-1,roundedPos[0]).isPlayable() && abs(pacman.getPosition()[0]-(roundedPos[1])) <= pacman.getRayon()/2 ){
 			pacman.move('d');
+			pacman.setDirection('d');
+		}
 
-		if(pacman.eat(plate)){
-			score+= pacman.eat(plate);
-			Tile tile(0,false,roundedPos);
-			plate.setTile(tile);
-			plate.decountFood();
+		value = pacman.eat(plate,monsters);
+		if(value){
+			score+= value;
+			if(value <= 50){
+				Tile tile(0,false,roundedPos);
+				plate.setTile(tile);
+				plate.decountFood();
+			}
+			
 		}
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
@@ -121,16 +173,22 @@ void Board::playerMove(){
 		roundedPos[1] = (size_t)tmpPos[0];
 		roundedPos[0] = (size_t)tmpPos[1];
 		pacman.move('d');
+		pacman.setDirection('d');
 
-		if(!plate.getTile(roundedPos[1]+1,roundedPos[0]).isPlayable() && abs(pacman.getPosition()[0]-(roundedPos[1]+1)) <= pacman.getRayon()/2 )
+		if(!plate.getTile(roundedPos[1]+1,roundedPos[0]).isPlayable() && abs(pacman.getPosition()[0]-(roundedPos[1]+1)) <= pacman.getRayon()/2 ){
 			pacman.move('u');
+			pacman.setDirection('u');
+		}
 
-		if(pacman.eat(plate)){
-
-			score+= pacman.eat(plate);
-			Tile tile(0,false,roundedPos);
-			plate.setTile(tile);
-			plate.decountFood();
+		value = pacman.eat(plate,monsters);
+		if(value){
+			score+= value;
+			if(value <= 50){
+				Tile tile(0,false,roundedPos);
+				plate.setTile(tile);
+				plate.decountFood();
+			}
+			
 		}
 	}
 	tmpPos = pacman.getPosition();
@@ -143,7 +201,7 @@ void Board::playerMove(){
 }
 void Board::printInPrompt(){
 	std::array<float,2> tmpPos = pacman.getPosition();
-	std::array<float,2> tmpPos2 = test.getPosition();
+	std::array<float,2> tmpPos2 = monsters[0].getPosition();
 	for(size_t i =0;i<plate.getLengthRow();i++){
 		for(size_t j =0;j<plate.getLengthCol();j++){
 			if(plate.getTile(i,j).isWall())

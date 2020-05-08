@@ -11,7 +11,7 @@ public:
 	Player() = default;
 	explicit Player(char ty,std::array<float,2> initPos);
 	void move(char direction);
-	void drawPlayer(sf::RenderWindow *window,size_t tileSize,bool shape,sf::Color color) const;
+	void drawPlayer(sf::RenderWindow *window,size_t tileSize,bool shape) const;
 	std::array<float,2> getPosition() const;
 	void setPosition(std::array<float,2> pos);
 	float getX() const;
@@ -24,6 +24,7 @@ public:
 	char getType() const ;
 	void setType(char t);
 	void setHide(bool state);
+	void setColor(sf::Color color);
 
 private:
 
@@ -36,5 +37,6 @@ private:
 
 	float rayon;
 	bool hidden;
+	sf::Color color;
 };
 #endif

@@ -60,8 +60,11 @@ float Player::getRayon() const{
 void Player::setRayon(float ray){
 	rayon = ray;
 }
+void Player::setColor(sf::Color color){
+	this->color = color;
+}
 
-void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha,sf::Color color) const{
+void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const{
 	if(!hidden){
 		if(sha){
 		sf::CircleShape shape(tileSize*rayon);
@@ -74,7 +77,7 @@ void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha,sf::Co
 	else{
 		sf::RectangleShape shape(sf::Vector2f(tileSize*rayon,tileSize*rayon));
 		shape.setOrigin(tileSize*getRayon()/2,tileSize*getRayon()/2);
-		shape.setPosition((position[1]+0.5)*tileSize,(position[0]+0.5)*tileSize);
+		shape.setPosition(position[1]*tileSize,(position[0]+0.5)*tileSize);
 		shape.setFillColor(color);
 		window->draw(shape);
 	}
