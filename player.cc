@@ -26,6 +26,8 @@ void Player::setSpeed(float sp){
 	currentSpeed = sp;
 }
 void Player::setHide(bool state){
+	if(state)
+		hiddenTime = 0;
 	hidden = state;
 }
 void Player::setSpeedInit(float speed){
@@ -78,9 +80,24 @@ void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const
 	else{
 		sf::RectangleShape shape(sf::Vector2f(tileSize*rayon,tileSize*rayon));
 		shape.setOrigin(tileSize*getRayon()/2,tileSize*getRayon()/2);
-		shape.setPosition(position[1]*tileSize,(position[0]+0.5)*tileSize);
+		shape.setPosition(position[1]*tileSize,position[0]*tileSize);
 		shape.setFillColor(color);
 		window->draw(shape);
 	}
 }
+}
+bool Player::getHide() const {
+	return hidden;
+}
+
+void Player::updateHiddenClock(){
+	hiddenClock = std::clock();
+}
+
+void Player::updateHiddenTime(){
+	hiddenTime += ( std::clock() - hiddenClock ) / (float) CLOCKS_PER_SEC;
+}
+
+float Player::getHiddenTime(){
+	return hiddenTime;
 }

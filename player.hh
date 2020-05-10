@@ -2,9 +2,10 @@
 #define PLAYER_HH
 #include<iostream>
 #include<string>
-#include<math.h>
+#include<cmath>
 #include<SFML/Window.hpp>
 #include<SFML/Graphics.hpp>
+#include <ctime>
 
 class Player{
 public:
@@ -24,8 +25,14 @@ public:
 	char getType() const ;
 	void setType(char t);
 	void setHide(bool state);
+	bool getHide() const;
 	void setColor(sf::Color color);
+	
+	void updateHiddenClock();
+	void updateHiddenTime();
+	float getHiddenTime();
 
+	virtual char getDirection() const = 0;
 private:
 
 	std::array<float,2> position;
@@ -38,5 +45,10 @@ private:
 	float rayon;
 	bool hidden;
 	sf::Color color;
+
+protected:
+
+	float hiddenTime;
+	std::clock_t hiddenClock;
 };
 #endif

@@ -9,7 +9,7 @@
 
 int main(){
 	Plate plate;
-	Board board(16,0.2);
+	Board board(24,0.1);
 	sf::RenderWindow window(sf::VideoMode(board.getPlate().getLengthCol()*board.getTileSize(),board.getPlate().getLengthRow()*board.getTileSize()),"Pacorona");
 	size_t k=0;
 
@@ -19,7 +19,12 @@ int main(){
 		window.clear();
 		board.drawBoard(&window);
 		board.playerMove();
-		board.monsterMove();
+
+		if(board.monsterMove()){
+			std::cout << "END OF THE GAME "<< std::endl;
+			//end game
+			return 1;
+		}
 
 		k++;
 		window.display();

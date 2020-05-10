@@ -17,9 +17,9 @@ public:
 	Pacman getPacman();
 	void printInPrompt();
 	void playerMove();
-	void monsterMove();
+	bool monsterMove();
 	void monsterOutOfHouse(Monster *monster);
-	void teleport(Player p);
+	void teleport(Player &p);
 	void drawBoard(sf::RenderWindow *window);
 private:
 	Pacman pacman;
@@ -28,7 +28,12 @@ private:
 	size_t score;
 	size_t tileSize;
 	float refSpeed;
+	const float hiddenTime = 30.0;
+	const float scatterTime = 30.0;
+	const float chaseTime = 30.0;
+	char secondMove;
 
-
+	void move(char);
+	Tile getTileNext(size_t x, size_t y, char dir);
 };
 #endif
