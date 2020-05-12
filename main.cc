@@ -3,15 +3,19 @@
 
 #include<string>
 #include<iostream>
+#include <cstdlib>
 #include"board.hh"
 #include"plate.hh"
 
 
 int main(){
 	Plate plate;
-	Board board(24,0.1);
+	std::clock_t start = std::clock();
+	Board board(24, 0.16);
 	sf::RenderWindow window(sf::VideoMode(board.getPlate().getLengthCol()*board.getTileSize(),board.getPlate().getLengthRow()*board.getTileSize()),"Pacorona");
 	size_t k=0;
+	srand(time(NULL));
+	float timePlayed=0;
 
 	while(window.isOpen()){
 		sf::Event event;
@@ -20,7 +24,8 @@ int main(){
 		board.drawBoard(&window);
 		board.playerMove();
 
-		if(board.monsterMove()){
+		timePlayed = ( std::clock() - start ) / (float) CLOCKS_PER_SEC;
+		if(board.monsterMove(timePlayed)){
 			std::cout << "END OF THE GAME "<< std::endl;
 			//end game
 			return 1;

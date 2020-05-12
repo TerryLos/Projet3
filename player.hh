@@ -27,12 +27,14 @@ public:
 	void setHide(bool state);
 	bool getHide() const;
 	void setColor(sf::Color color);
+	sf::Color getNominalColor() const;
 	
 	void updateHiddenClock();
 	void updateHiddenTime();
 	float getHiddenTime();
 
 	virtual char getDirection() const = 0;
+	float getCurrSpeed(); // debuging
 private:
 
 	std::array<float,2> position;
@@ -44,11 +46,12 @@ private:
 
 	float rayon;
 	bool hidden;
-	sf::Color color;
+	sf::Color currentColor;
 
 protected:
 
 	float hiddenTime;
 	std::clock_t hiddenClock;
+	sf::Color nominalColor;
 };
 #endif

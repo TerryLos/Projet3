@@ -52,6 +52,9 @@ char Player::getType() const{
 void Player::setType(char t){
 	type = t;
 }
+sf::Color Player::getNominalColor() const{
+	return nominalColor;
+}
 
 void Player::setPosition(std::array<float,2> pos){
 	position = pos;
@@ -63,7 +66,7 @@ void Player::setRayon(float ray){
 	rayon = ray;
 }
 void Player::setColor(sf::Color color){
-	this->color = color;
+	this->currentColor = color;
 }
 
 void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const{
@@ -73,7 +76,7 @@ void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const
 		sf::CircleShape shape(tileSize*rayon);
 		shape.setOrigin(tileSize*getRayon(),tileSize*getRayon());
 		shape.setPosition(position[1]*tileSize,position[0]*tileSize);
-		shape.setFillColor(color);
+		shape.setFillColor(currentColor);
 		window->draw(shape);
 
 		}
@@ -81,7 +84,7 @@ void Player::drawPlayer(sf::RenderWindow *window,size_t tileSize,bool sha) const
 		sf::RectangleShape shape(sf::Vector2f(tileSize*rayon,tileSize*rayon));
 		shape.setOrigin(tileSize*getRayon()/2,tileSize*getRayon()/2);
 		shape.setPosition(position[1]*tileSize,position[0]*tileSize);
-		shape.setFillColor(color);
+		shape.setFillColor(currentColor);
 		window->draw(shape);
 	}
 }
@@ -100,4 +103,9 @@ void Player::updateHiddenTime(){
 
 float Player::getHiddenTime(){
 	return hiddenTime;
+}
+
+float Player::getCurrSpeed()
+{
+	return currentSpeed;
 }
