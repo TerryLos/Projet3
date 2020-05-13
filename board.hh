@@ -12,10 +12,10 @@
 class Board{
 public:
 	Board(size_t size,float refSpeed);
-	Plate getPlate();
-	size_t getTileSize();
-	size_t getScore();
-	Pacman getPacman();
+	Plate getPlate() const;
+	size_t getTileSize() const;
+	size_t getScore() const;
+	Pacman getPacman() const;
 	void printInPrompt();
 	void playerMove();
 	bool monsterMove(float timePlayed);
@@ -43,9 +43,9 @@ private:
 
 	//char pacmanSecondMove;
 
-	void move(char);
+	void move(char dir);
 	Tile getTileNext(size_t x, size_t y, char dir);
-	bool isCloseEnough(std::array<float,2>, Tile, char);
+	bool isCloseEnough(std::array<float,2> p, Tile tile, char dir);
 	bool isPerpendicular(char x, char y);
 	bool isBelowCenter(std::array<float,2> p, char direction);
 };

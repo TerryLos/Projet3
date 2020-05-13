@@ -27,14 +27,14 @@ Board::Board(size_t size,float refSpeed){
 
 }
 
-Plate Board::getPlate(){
+Plate Board::getPlate() const {
 	return plate;
 }
-size_t Board::getScore(){
+size_t Board::getScore() const {
 	return score;
 }
 
-size_t Board::getTileSize(){
+size_t Board::getTileSize() const {
 	return tileSize;
 }
 void Board::drawBoard(sf::RenderWindow *window){
@@ -221,12 +221,11 @@ void Board::printInPrompt(){
 		std::cout<<"\n";
 	}
 }
-Pacman Board::getPacman(){
+Pacman Board::getPacman() const {
 	return pacman;
 }
 
-Tile Board::getTileNext(size_t y, size_t x, char dir)
-{
+Tile Board::getTileNext(size_t y, size_t x, char dir) const  {
 	if(dir == 'u')
 		return plate.getTile(y - 1, x);
 	else if(dir == 'd')
@@ -239,7 +238,7 @@ Tile Board::getTileNext(size_t y, size_t x, char dir)
 	return Tile(0, true, (std::array<size_t,2>) {0,0});
 }
 
-bool Board::isCloseEnough(std::array<float,2> p, Tile tile, char dir){
+bool Board::isCloseEnough(const std::array<float,2> p, const Tile tile, const char dir){
 	if(dir == 'u'){
 		float d = p[0] - tile.getY();
 		return d <= 1.5;
